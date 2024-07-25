@@ -1,0 +1,14 @@
+{
+  "name": "muscle-mate-be",
+  "version": "1.0.0",
+  "description": "Backend API for Muscle Mate, a fitness tracking and workout management application. Built with Node.js and Express.js, it provides endpoints for user authentication, workout logging, progress tracking, and more.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Lovekesh Pal",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
