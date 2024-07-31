@@ -6,9 +6,9 @@ const jwt = require("jsonwebtoken");
 const secretKey = process.env.JWT_SECRET;
 
 const signup = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, username, password } = req.body;
   try {
-    const user = new User({ username, password });
+    const user = new User({ email, username, password });
     await user.save();
     res.status(201).send("User registered successfully");
   } catch (error) {
