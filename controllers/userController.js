@@ -21,35 +21,47 @@ const signup = async (req, res) => {
       }
     }
 
-    // Create a new user
-    const user = new User({ email, username, password });
+    // Hash the password before saving the user
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create a new user with the hashed password
+    const user = new User({ email, username, password: hashedPassword });
     await user.save();
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
+    console.error("Error registering user:", error);
     res.status(400).json({ error: "Error registering user" });
   }
 };
 
 const login = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, email, password } = req.body;
   try {
-    const user = await User.findOne({ username });
+    // Find user by either username or email
+    const user = await User.findOne({
+      $or: [{ username }, { email }],
+    });
     if (!user) {
       console.error("User not found");
-      return res.status(400).send("User not found");
+      return res.status(400).json({ error: "User not found" });
     }
+
+    // Log user details for debugging
+    console.log("User found:", user);
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       console.error("Invalid credentials");
-      return res.status(400).send("Invalid credentials");
+      return res.status(400).json({ error: "Invalid credentials" });
     }
+
     const token = jwt.sign({ userId: user._id }, secretKey, {
       expiresIn: "1h",
     });
-    res.send({ message: "Login successful", token });
+    res.json({ message: "Login successful", token });
   } catch (error) {
     console.error("Error logging in:", error);
-    res.status(400).send("Error logging in");
+    res.status(400).json({ error: "Error logging in" });
   }
 };
 
