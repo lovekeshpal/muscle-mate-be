@@ -8,10 +8,17 @@ const secretKey = process.env.JWT_SECRET;
 const signup = async (req, res) => {
   const { email, username, password } = req.body;
   try {
-    // Check if the username already exists
-    const existingUser = await User.findOne({ username });
+    // Check if the username or email already exists
+    const existingUser = await User.findOne({
+      $or: [{ username }, { email }],
+    });
     if (existingUser) {
-      return res.status(400).send("Username already taken");
+      if (existingUser.username === username) {
+        return res.status(400).send("Username already taken");
+      }
+      if (existingUser.email === email) {
+        return res.status(400).send("Email already taken");
+      }
     }
 
     // Create a new user
