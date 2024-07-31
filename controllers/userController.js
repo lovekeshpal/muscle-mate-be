@@ -14,19 +14,19 @@ const signup = async (req, res) => {
     });
     if (existingUser) {
       if (existingUser.username === username) {
-        return res.status(400).send("Username already taken");
+        return res.status(400).json({ error: "Username already taken" });
       }
       if (existingUser.email === email) {
-        return res.status(400).send("Email already taken");
+        return res.status(400).json({ error: "Email already taken" });
       }
     }
 
     // Create a new user
     const user = new User({ email, username, password });
     await user.save();
-    res.status(201).send("User registered successfully");
+    res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
-    res.status(400).send("Error registering user");
+    res.status(400).json({ error: "Error registering user" });
   }
 };
 
